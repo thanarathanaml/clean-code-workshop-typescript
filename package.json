@@ -1,0 +1,26 @@
+{
+  "name": "clean-code-workshop",
+  "scripts": {
+    "start": "ts-node GameMatcher invoice invoices.json",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.5",
+    "@babel/preset-env": "^7.21.5",
+    "@babel/preset-typescript": "^7.21.5",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^18.16.3",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "prettier": "^2.8.8",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  },
+  "jest": {
+    "clearMocks": true
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}

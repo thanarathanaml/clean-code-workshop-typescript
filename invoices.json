@@ -1,0 +1,17 @@
+[{
+  "customer": "Thoughtworks",
+  "matches": [
+    {
+      "gameID": "csgo",
+      "players": 55
+    },
+    {
+      "gameID": "nfs",
+      "players": 35
+    },
+    {
+      "gameID": "pubg",
+      "players": 40
+    }
+  ]
+}]
