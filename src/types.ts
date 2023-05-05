@@ -1,3 +1,5 @@
+import { MatchCalculator } from "./statementData";
+
 export type Invoice = {
   customer: string;
   matches: Match[];
@@ -15,4 +17,5 @@ export type Games = {
 export type Game = {
   name: string;
   type: string;
+  matchCalculator: typeof MatchCalculator;
 };

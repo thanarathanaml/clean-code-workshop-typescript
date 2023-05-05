@@ -3,7 +3,7 @@ import { Game, Games, Invoice, Match } from "./types";
 type ExtendedMatch = Match & {
   game: Game;
   amount: number;
-  credits: number;
+  gameCredits: number;
 };
 
 export type StatementData = {
@@ -13,43 +13,52 @@ export type StatementData = {
   totalCredits: number;
 };
 
-class MatchCalculator {
-  private match: Match;
-  private game: Game;
+export class MatchCalculator {
+  protected match: Match;
+  protected game: Game;
 
-  constructor(match: Match, game: Game) {
+  protected constructor(match: Match, game: Game) {
     this.match = match;
     this.game = game;
   }
 
-  get amount() {
-    let result = 0;
-    switch (this.game.type) {
-      case "shooter":
-        result = 400;
-        if (this.match.players > 30) {
-          result += 10 * (this.match.players - 30);
-        }
-        break;
-      case "racing":
-        result = 300;
-        if (this.match.players > 20) {
-          result += 100 + 5 * (this.match.players - 20);
-        }
-        result += 3 * this.match.players;
-        break;
-      default:
-        throw new Error(`Unknown type: ${this.game.type}`);
+  get amount(): number {
+    throw new Error("Subclass Responsibility");
+  }
+
+  get gameCredits(): number {
+    return Math.max(this.match.players - 30, 0);
+  }
+}
+
+export class ShooterMatchCalculator extends MatchCalculator {
+  get amount(): number {
+    let result = 400;
+    if (this.match.players > 30) {
+      result += 10 * (this.match.players - 30);
     }
     return result;
   }
+}
 
-  get gameCredits() {
-    let credits = Math.max(this.match.players - 30, 0);
-    // add extra credit for every ten racing players
-    if ("racing" == this.game.type)
-      credits += Math.floor(this.match.players / 10);
-    return credits;
+export class RacingMatchCalculator extends MatchCalculator {
+  get amount(): number {
+    let result = 300;
+    if (this.match.players > 20) {
+      result += 100 + 5 * (this.match.players - 20);
+    }
+    result += 3 * this.match.players;
+    return result;
+  }
+
+  get gameCredits(): number {
+    return super.gameCredits + Math.floor(this.match.players / 10);
+  }
+}
+
+export class UnknownMatchCalculator extends MatchCalculator {
+  get amount(): number {
+    throw Error(`Unknown type: ${this.game.type}`);
   }
 }
 
@@ -61,11 +70,16 @@ export function createStatementData(invoice: Invoice, games: Games) {
   statementData.totalCredits = totalGameCredits(statementData.matches);
 
   function extendMatch(match: Match) {
+    function createMatchCalculator(match: Match) {
+      const GameMatchCalculator = gameFor(match).matchCalculator;
+      return new GameMatchCalculator(match, gameFor(match));
+    }
+
+    let matchCalculator = createMatchCalculator(match);
     const result: ExtendedMatch = { ...match } as ExtendedMatch;
     result.game = gameFor(result);
-    const matchCalculator = new MatchCalculator(match, gameFor(result));
     result.amount = matchCalculator.amount;
-    result.credits = matchCalculator.gameCredits;
+    result.gameCredits = matchCalculator.gameCredits;
     return result;
 
     function gameFor(match: Match): Game {
@@ -84,7 +98,7 @@ export function createStatementData(invoice: Invoice, games: Games) {
   function totalGameCredits(matches: ExtendedMatch[]): number {
     let gameCredits = 0;
     for (const match of matches) {
-      gameCredits += match.credits;
+      gameCredits += match.gameCredits;
     }
     return gameCredits;
   }

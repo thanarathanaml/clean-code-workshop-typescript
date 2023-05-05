@@ -1,5 +1,6 @@
 import { htmlStatement, statement } from "./statement";
 import games from "./data/games";
+import { UnknownMatchCalculator } from "./statementData";
 
 const invoice = {
   customer: "test",
@@ -38,7 +39,13 @@ describe("Statement characterization test", () => {
     expect(() =>
       statement(
         { customer: "test", matches: [{ players: 10, gameID: "chess" }] },
-        { chess: { name: "Chess", type: "board" } }
+        {
+          chess: {
+            name: "Chess",
+            type: "board",
+            matchCalculator: UnknownMatchCalculator,
+          },
+        }
       )
     ).toThrow("Unknown type: board");
   });

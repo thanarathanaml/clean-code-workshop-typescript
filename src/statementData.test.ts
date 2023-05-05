@@ -1,4 +1,8 @@
-import { createStatementData } from "./statementData";
+import {
+  createStatementData,
+  RacingMatchCalculator,
+  ShooterMatchCalculator,
+} from "./statementData";
 import games from "./data/games";
 
 const invoice = {
@@ -28,40 +32,44 @@ const statementData = {
   matches: [
     {
       amount: 400,
-      credits: 0,
+      gameCredits: 0,
       game: {
         name: "Counter Strike: Global Offense",
         type: "shooter",
+        matchCalculator: ShooterMatchCalculator,
       },
       gameID: "csgo",
       players: 10,
     },
     {
       amount: 315,
-      credits: 0,
+      gameCredits: 0,
       game: {
         name: "Need For Speed: Unbound",
         type: "racing",
+        matchCalculator: RacingMatchCalculator,
       },
       gameID: "nfs",
       players: 5,
     },
     {
       amount: 620,
-      credits: 14,
+      gameCredits: 14,
       game: {
         name: "Need For Speed: Unbound",
         type: "racing",
+        matchCalculator: RacingMatchCalculator,
       },
       gameID: "nfs",
       players: 40,
     },
     {
       amount: 600,
-      credits: 20,
+      gameCredits: 20,
       game: {
         name: "Counter Strike: Global Offense",
         type: "shooter",
+        matchCalculator: ShooterMatchCalculator,
       },
       gameID: "csgo",
       players: 50,
